@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{STORY_NAME}}</title>
+</head>
+
+<body>
+  {{STORY_DATA}}
+  <!-- <tw-storydata name="Example HTML" startnode="1" hidden>
+    <tw-passagedata pid="1" name="lotor_start.1">
+      !!Noble Family Feud!!
+
+      (picture:https://stellaris.paradoxwikis.com/images/3/31/Evt_aggressive_flora.png)
+
+      Two powerful aristocratic families within the Ascendancy are feuding with each other.
+      One has offered the government a large sum to officially denounce the other.
+
+      [[Accept the bribe->lotor_start.2]]
+      [[Denounce the family that offered the bribe]]
+      [[We will stay out of this dispute]]
+    </tw-passagedata>
+    <tw-passagedata pid="2" name="lotor_start.2">
+      !!Second event title!!
+      [[Start->lotor_start.1]]
+    </tw-passagedata>
+  </tw-storydata> -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: radial-gradient(circle, #2b372d, #283732, #273737, #29373a, #2d363b, #2e373c, #30373c, #31383d, #303a3e, #303c3f, #303d3f, #313f3e);
+    }
+
+    tw-passage {
+      background-color: #162c1fee;
+      color: white;
+      padding: 10px 25px;
+      width: 500px;
+      box-sizing: border-box;
+    }
+
+    tw-passage h1 {
+      text-shadow: #3b755dee 1px 0 20px;
+      border-bottom: 2px solid #324941ee;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    tw-passage a {
+      display: block;
+      text-decoration: none;
+    }
+
+    tw-passage button,
+    tw-passage a {
+      display: block;
+      width: 100%;
+      color: white;
+      text-align: center;
+    }
+
+    tw-passage button {
+      margin-bottom: 5px;
+      padding: 2.5px 0;
+      border: 1px solid #324941ee;
+      background-color: #202c22ee;
+      position: relative;
+    }
+
+    tw-passage button:hover::before,
+    tw-passage button:hover::after {
+      content: '';
+      position: absolute;
+      width: 2.5%;
+      height: 100%;
+      top: 0;
+      border-top: 2px solid #dd960896;
+      border-bottom: 2px solid #dd960896;
+      box-sizing: border-box;
+    }
+
+    tw-passage button:hover::before {
+      left: 0;
+      border-left: 2px solid #dd960896;
+    }
+
+    tw-passage button:hover::after {
+      right: 0;
+      border-right: 2px solid #dd960896;
+    }
+
+    tw-passage button:hover {
+      background: linear-gradient(0deg, #dd96081a 45%, #dd96085d 45%, #dd96085d 55%, #dd96081a 55%, #dd96081a 100%);
+      background-size: 400% 400%;
+
+      -webkit-animation: scrolling 2s linear infinite;
+      -moz-animation: scrolling 2s linear infinite;
+      animation: scrolling 2s linear infinite;
+    }
+
+    tw-passage img {
+      width: 450px;
+      height: 150px;
+      display: block;
+      border: 2px solid #324941ee;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    tw-passage article {
+      background-color: #161d1798;
+      padding: 12.5px;
+      border: 1px solid #3d574eee;
+      margin-bottom: 15px;
+      color: #a8dbc4;
+    }
+
+    tw-passage article p {
+      margin: 10px 0;
+    }
+
+    @-webkit-keyframes scrolling {
+      0% {
+        background-position: 50% 100%
+      }
+
+      100% {
+        background-position: 50% 0%
+      }
+    }
+
+    @-moz-keyframes scrolling {
+      0% {
+        background-position: 50% 100%
+      }
+
+      100% {
+        background-position: 50% 0%
+      }
+    }
+
+    @keyframes scrolling {
+      0% {
+        background-position: 50% 100%
+      }
+
+      100% {
+        background-position: 50% 0%
+      }
+    }
+  </style>
+  <script>
+    (() => {
+      function createButtons(content) {
+        const buttonRegExp = /\[\[.*?\]\]/g;
+        let i = 0;
+
+        const parsedContent = content.replace(buttonRegExp, (match) => {
+          let display = match.replace(/[\[\]]/g, "");
+          let target = null;
+          let articleEndTag = '';
+
+          if (display.includes("-&gt;")) {
+            [display, target] = display.split("-&gt;").map(el => el.trim());
+          }
+
+          if (i === 0) {
+            articleEndTag = "</article>";
+          }
+
+          i++;
+
+          if (target) {
+            return `${articleEndTag}<button><a href="javascript:void(0)" data-passage="${target}">${display}</a></button>`;
+          } else {
+            return `${articleEndTag}<button>${display}</button>`;
+          }
+        });
+
+        return parsedContent;
+      }
+
+      function createTitle(content) {
+        const titleRegExp = /!!.*?!!/;
+
+        const parsedContent = content.replace(titleRegExp, (match) => {
+          const display = match.replace(/!!/g, "");
+
+          return `<h1>${display}</h1>`;
+        });
+
+        return parsedContent;
+      }
+
+      function createPicture(content) {
+        const imageRegExp = /\(picture:.*?\)/;
+        let found = false;
+
+        const parsedContent = content.replace(imageRegExp, (match) => {
+          const imgURL = match.replace("picture:", "").slice(1, -1);
+          found = true;
+
+          return `<img src="${imgURL}" /><article>`;
+        });
+
+        return parsedContent;
+      }
+
+      function createDescription(content) {
+        const descriptionRegExp = /<article>(.*?|\n)*?<\/article>/;
+
+        const parsedContent = content.replace(descriptionRegExp, (match) => {
+          const paragraphs = match
+            .split("\n")
+            .filter(item => item !== "<article>" && item !== "<article/>" && item.length)
+            .map(item => `<p>${item.trim()}</p>`)
+            .join("");
+
+          return `<article>${paragraphs}</article>`;
+        });
+
+        return parsedContent;
+      }
+
+      function parse(content) {
+        const functions = [createTitle, createPicture, createButtons, createDescription];
+        const parsed = functions.reduce((parsedContent, currentFunction) => currentFunction(parsedContent), content);
+
+        return parsed;
+      }
+
+      function findPassageByPid(pid) {
+        return document.querySelector(`[pid = "${pid}"]`);
+      }
+
+      function findPassageByName(name) {
+        return document.querySelector(`[name = "${name}"]`);
+      }
+
+      function handleButtonClick({ target }) {
+        let passageName = target.attributes["data-passage"].value;
+        let passageData = findPassageByName(passageName);
+        showPassage(passageData);
+      }
+
+      function showPassage(passageData) {
+        let passage = document.querySelector('tw-passage');
+
+        if (passage === null) {
+          passage = document.createElement('tw-passage');
+        }
+
+        let links = passage.querySelectorAll('a[data-passage]');
+
+        links.forEach(link => {
+          link.removeEventListener('click', handleButtonClick);
+        });
+
+        passage.innerHTML = parse(passageData.innerHTML);
+
+        links = passage.querySelectorAll('a[data-passage]');
+
+        links.forEach(link => {
+          link.addEventListener('click', handleButtonClick);
+        });
+
+        document.body.appendChild(passage);
+      }
+
+      let storyData = document.querySelector('tw-storydata');
+      let startNode = storyData.attributes['startnode'].value;
+      let passageData = findPassageByPid(startNode);
+
+      showPassage(passageData)
+    })();
+  </script>
+</body>
+
+</html>

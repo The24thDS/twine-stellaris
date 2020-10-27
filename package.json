@@ -1,0 +1,23 @@
+{
+  "name": "twine-stellaris",
+  "version": "1.0.0",
+  "description": "Stellaris format for Twine",
+  "main": "index.js",
+  "scripts": {
+    "build": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The24thDS/twine-stellaris.git"
+  },
+  "keywords": [
+    "twine",
+    "stellaris"
+  ],
+  "author": "David Sima",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/The24thDS/twine-stellaris/issues"
+  },
+  "homepage": "https://github.com/The24thDS/twine-stellaris#readme"
+}
